@@ -1,0 +1,31 @@
+- name: Metasploit
+  hosts: all
+  tasks:
+    - name: Install core deps
+      apt:
+        name:
+          - libpq-dev
+          - libpcap0.8-dev
+
+    - name: Clone Repository
+      git:
+        repo: https://github.com/rapid7/metasploit-framework
+        dest: "{{ ansible_env.HOME }}/Tools/metasploit"
+
+    - name: Install Ruby
+      shell: rvm install ruby-`(cat .ruby-version)`
+      args:
+        chdir: "{{ ansible_env.HOME }}/Tools/metasploit"
+        executable: /usr/bin/fish
+
+    - name: Install Bundler
+      shell: gem install bundler
+      args:
+        chdir: "{{ ansible_env.HOME }}/Tools/metasploit"
+        executable: /usr/bin/fish
+
+    - name: Install Gems
+      shell: bundle install
+      args:
+        chdir: "{{ ansible_env.HOME }}/Tools/metasploit"
+        executable: /usr/bin/fish

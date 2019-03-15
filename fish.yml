@@ -11,6 +11,7 @@
           - curl
           - tmux
           - mosh
+          - golang
         update_cache: yes
 
     - name: Install virtualfish via pip
@@ -18,6 +19,14 @@
         name:
           - virtualfish
           - pipenv
+
+    - name: Get GPG keys for RVM install package
+      shell: gpg --keyserver hkp://pool.sks-keyservers.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+
+    - name: Install RVM
+      shell: curl -sSL https://get.rvm.io | bash -s stable
+      args:
+        warn: false
 
     - name: Install fisher
       shell: curl https://git.io/fisher --create-dirs -sLo ~/.config/fish/functions/fisher.fish
@@ -44,13 +53,18 @@
       args:
         chdir: /tmp/oh-my-fish/
 
-    - name: Configure oh-my-fish
+    - name: Configure oh-my-fish before.init.fish
       copy:
         content: |
               set -g VIRTUALFISH_PYTHON "/usr/bin/python"
               set -g VIRTUALFISH_PLUGINS "auto_activation"
               set -g VIRTUALFISH_HOME $HOME/.local/share/virtualenvs/
         dest: "{{ ansible_env.HOME }}/.config/omf/before.init.fish"
+
+    - name: Configure oh-my-fish init.fish
+      copy:
+        content: set -xg GOPATH $HOME/Tools/go
+        dest: "{{ ansible_env.HOME }}/.config/omf/init.fish"
 
     - name: Install oh-my-fish plugins and theme
       shell: omf install sushi extract rvm virtualfish
