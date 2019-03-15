@@ -9,6 +9,8 @@
           - python2
           - python3
           - curl
+          - tmux
+          - mosh
         update_cache: yes
 
     - name: Install virtualfish via pip
