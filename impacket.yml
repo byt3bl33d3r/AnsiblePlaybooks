@@ -1,0 +1,14 @@
+- name: Impacket
+  hosts: all
+  tasks:
+    - name: Clone repo
+      git:
+        repo: https://github.com/SecureAuthCorp/impacket
+        dest: "{{ ansible_env.HOME }}/Tools/impacket"
+
+    - name: Install via pipenv
+      shell: |
+        pipenv install
+        pipenv run python setup.py install
+      args:
+        chdir: "{{ ansible_env.HOME }}/Tools/impacket"

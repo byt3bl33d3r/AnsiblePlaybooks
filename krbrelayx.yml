@@ -1,0 +1,15 @@
+- name: krbrelayx
+  hosts: all
+  tasks:
+    - name: Clone repo
+      git:
+        repo: https://github.com/dirkjanm/krbrelayx
+        dest: "{{ ansible_env.HOME }}/Tools/krbrelayx"
+
+    - name: Connect virtualenv to impacket
+      shell: |
+        vf activate impacket
+        vf connect
+      args:
+        chdir: "{{ ansible_env.HOME }}/Tools/krbrelayx"
+        executable: /usr/bin/fish

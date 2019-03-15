@@ -1,0 +1,15 @@
+- name: PrivExchange
+  hosts: all
+  tasks:
+    - name: Clone repo
+      git:
+        repo: https://github.com/dirkjanm/PrivExchange
+        dest: "{{ ansible_env.HOME }}/Tools/privexchange"
+
+    - name: Connect virtualenv to impacket
+      shell: |
+        vf activate impacket
+        vf connect
+      args:
+        chdir: "{{ ansible_env.HOME }}/Tools/privexchange"
+        executable: /usr/bin/fish

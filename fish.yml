@@ -1,0 +1,57 @@
+- name: Install fish with oh-my-fish
+  hosts: all
+  tasks:
+    - name: Update repositories cache and install deps
+      apt:
+        name:
+          - git
+          - fish
+          - python3
+        update_cache: yes
+
+    - name: Install virtualfish via pip
+      pip:
+        name:
+          - virtualfish
+          - pipenv
+
+    - name: Install fisher
+      shell: curl https://git.io/fisher --create-dirs -sLo ~/.config/fish/functions/fisher.fish
+      args:
+        warn: false
+
+    - name: Install fish-pipenv
+      shell: fisher add kennethreitz/fish-pipenv
+      args:
+        executable: /usr/bin/fish
+
+    - name: Configure fish-pipenv
+      copy:
+        content: set pipenv_fish_fancy yes
+        dest: "{{ ansible_env.HOME }}/.config/fish/config.fish"
+
+    - name: Git clone oh-my-fish 
+      git:
+        repo: https://github.com/oh-my-fish/oh-my-fish
+        dest: /tmp/oh-my-fish
+
+    - name: Install oh-my-fish
+      shell: bin/install --offline --noninteractive --yes
+      args:
+        chdir: /tmp/oh-my-fish/
+
+    - name: Configure oh-my-fish
+      copy:
+        content: |
+              set -g VIRTUALFISH_PYTHON "/usr/bin/python"
+              set -g VIRTUALFISH_PLUGINS "auto_activation"
+              set -g VIRTUALFISH_HOME $HOME/.local/share/virtualenvs/
+        dest: "{{ ansible_env.HOME }}/.config/omf/before.init.fish"
+
+    - name: Install oh-my-fish plugins and theme
+      shell: omf install sushi extract rvm virtualfish
+      args:
+        executable: /usr/bin/fish
+
+    - name: Change default shell to fish
+      shell: chsh -s /usr/bin/fish

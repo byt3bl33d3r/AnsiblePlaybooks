@@ -1,0 +1,14 @@
+- name: mitm6
+  hosts: all
+  tasks:
+    - name: Clone repo
+      git:
+        repo: https://github.com/fox-it/mitm6
+        dest: "{{ ansible_env.HOME }}/Tools/mitm6"
+
+    - name: Install via pipenv
+      shell: |
+        pipenv install
+        pipenv run python setup.py install
+      args:
+        chdir: "{{ ansible_env.HOME }}/Tools/mitm6"
