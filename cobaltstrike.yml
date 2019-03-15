@@ -47,4 +47,4 @@
     - name: Clone CobaltStrike-ToolKit Repository
       git:
         repo: https://github.com/killswitch-GUI/CobaltStrike-ToolKit
-        dest: "{{ ansible_env.HOME }}/Tools/cobaltStrike-toolKit"
+        dest: "{{ ansible_env.HOME }}/Tools/cobaltstrike-toolKit"

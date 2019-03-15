@@ -1,0 +1,7 @@
+- name: Responder
+  hosts: all
+  tasks:
+    - name: Clone repo
+      git:
+        repo: https://github.com/lgandx/Responder
+        dest: "{{ ansible_env.HOME }}/Tools/responder"
