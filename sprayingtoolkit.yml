@@ -1,4 +1,4 @@
-- name: SILENTTRINITY
+- name: SprayingToolkit
   hosts: all
   tasks:
     - name: Install core deps
@@ -8,11 +8,11 @@
 
     - name: Clone repo
       git:
-        repo: https://github.com/byt3bl33d3r/SILENTTRINITY
-        dest: "{{ ansible_env.HOME }}/Tools/silenttrinity"
+        repo: https://github.com/byt3bl33d3r/SprayingToolkit
+        dest: "{{ ansible_env.HOME }}/Tools/sprayingtoolkit"
 
     - name: Install via pipenv
       shell: |
         pipenv install
       args:
-        chdir: "{{ ansible_env.HOME }}/Tools/silenttrinity/Server"
+        chdir: "{{ ansible_env.HOME }}/Tools/sprayingtoolkit"
