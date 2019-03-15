@@ -1,0 +1,50 @@
+- name: CobaltStrike
+  hosts: all
+  tasks:
+    - name: Install core deps
+      apt:
+        name:
+          - openjdk-11-jdk
+
+    - name: Set default Java version
+      shell: update-java-alternatives -s java-1.11.0-openjdk-amd64
+
+    - name: Get Download Token
+      shell: "curl -s https://www.cobaltstrike.com/download -d 'dlkey={{ cstrike_key }}' | grep 'href=\"/downloads/' | cut -d '/' -f3"
+      register: download_token
+      args: 
+        warn: false
+
+    - debug:
+        var: download_token.stdout
+
+    - name: Download
+      shell: "curl -s https://www.cobaltstrike.com/downloads/{{ download_token.stdout }}/cobaltstrike-trial.tgz -o /tmp/cobaltstrike.tgz"
+      args:
+        warn: false
+
+    - name: Spool Key
+      copy:
+        content: "{{ cstrike_key }}"
+        dest: "{{ ansible_env.HOME }}/.cobaltstrike.license"
+
+    - name: Decompress and Move Folder
+      shell: "extract /tmp/cobaltstrike.tgz && mv cobaltstrike {{ ansible_env.HOME }}/Tools"
+      args:
+        executable: /usr/bin/fish
+        chdir: /tmp
+
+    - name: Update Install
+      shell: ./update
+      args:
+        chdir: "{{ ansible_env.HOME }}/Tools/cobaltstrike"
+
+    - name: Clone Malleable-C2 Profiles Repository
+      git:
+        repo: https://github.com/rsmudge/Malleable-C2-Profiles
+        dest: "{{ ansible_env.HOME }}/Tools/malleable-c2-profiles"
+
+    - name: Clone CobaltStrike-ToolKit Repository
+      git:
+        repo: https://github.com/killswitch-GUI/CobaltStrike-ToolKit
+        dest: "{{ ansible_env.HOME }}/Tools/cobaltStrike-toolKit"

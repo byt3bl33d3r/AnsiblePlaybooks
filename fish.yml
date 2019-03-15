@@ -6,7 +6,9 @@
         name:
           - git
           - fish
+          - python2
           - python3
+          - curl
         update_cache: yes
 
     - name: Install virtualfish via pip
